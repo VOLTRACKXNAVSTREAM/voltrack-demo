@@ -30,27 +30,25 @@ function getBaseColorFromRgba(rgbaColor) {
   return `rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`;
 }
 
-const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime, labelCount, timeFrame }) => {
+const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCount }) => {
   const baseLineColor = getBaseColorFromRgba(gradientColors[0]);
 
   const now = new Date();
+  const interval = timeFrame / (labelCount - 1);  // Time between each label in minutes
   const labels = [];
 
-  // Create dynamic labels based on labelCount and timeFrame (in minutes)
-  const interval = timeFrame / (labelCount - 1);  // calculate the interval between each label
+  // Create labels for the x-axis, evenly spaced within the given timeFrame
   for (let i = 0; i < labelCount; i++) {
-    const label = new Date(now.getTime() - i * interval * 60 * 1000); // labels spaced apart by interval
+    const label = new Date(now.getTime() - i * interval * 60 * 1000);
     labels.push(label);
   }
-
-  const initialData = Array(labelCount).fill(null);
 
   const [chartData, setChartData] = useState({
     labels: labels,
     datasets: [
       {
         label: name,
-        data: initialData,
+        data: Array(labelCount).fill(null),
         borderColor: lineColor || baseLineColor,
         lineTension: 0.5,
         borderWidth: 1.5,
@@ -61,7 +59,6 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime, label
         backgroundColor: (context) => {
           const chart = context.chart;
           const { ctx, chartArea } = chart;
-
           if (!chartArea) {
             return null;
           }
@@ -87,17 +84,14 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime, label
       const updatedLabels = [...prevData.labels, now];
       const updatedData = [...prevData.datasets[0].data, newData];
 
-      // Maintain only the last 'labelCount' labels and data points
-      const filteredLabels = updatedLabels.slice(-labelCount);
-      const filteredData = updatedData.slice(-labelCount);
-
+      // Do not filter the old data, just keep appending
       return {
-        labels: filteredLabels,
+        labels: updatedLabels,
         datasets: [
           {
             label: name,
             fill: true,
-            data: filteredData,
+            data: updatedData,
             borderColor: lineColor || baseLineColor,
             borderWidth: 1.5,
             lineTension: 0.5,
@@ -126,20 +120,20 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime, label
     if (chartRef.current) {
       chartRef.current.update();
     }
-  }, [data, name, referenceTime]);
+  }, [data, name, timeFrame, gradientColors, lineColor]);
 
   const options = {
     scales: {
       x: {
         type: "time",
         time: {
-          unit: "minute", // Set unit to minute for the fixed time intervals
+          unit: "minute", // Display the x-axis in minutes
           displayFormats: {
             minute: "hh:mm a",
           },
         },
-        min: now.getTime() - timeFrame * 60 * 1000, // Start from 'timeFrame' minutes ago
-        max: now.getTime(),
+        min: now.getTime() - timeFrame * 60 * 1000, // Starting point based on time frame
+        max: now.getTime(), // End the graph at the current time
         ticks: {
           color: 'black',
         },
@@ -181,14 +175,6 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime, label
       },
     },
   };
-
-  useEffect(() => {
-    const isDarkMode = document.documentElement.classList.contains('dark');
-    const labelColor = isDarkMode ? 'white' : 'black';
-
-    options.scales.x.ticks.color = labelColor;
-    options.scales.y.ticks.color = labelColor;
-  }, []);
 
   return <Line data={chartData} ref={chartRef} options={options} />;
 };
