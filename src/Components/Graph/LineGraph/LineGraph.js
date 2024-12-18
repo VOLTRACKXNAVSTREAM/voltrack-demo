@@ -30,18 +30,20 @@ function getBaseColorFromRgba(rgbaColor) {
   return `rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`;
 }
 
-const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime }) => {
+const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime, labelCount, timeFrame }) => {
   const baseLineColor = getBaseColorFromRgba(gradientColors[0]);
-  const duration = 180 * 60 * 1000; // 3 hours in milliseconds
-  
+
   const now = new Date();
   const labels = [];
-  for (let i = 2; i >= 0; i--) {
-    const label = new Date(now.getTime() - i * 60 * 60 * 1000);
+
+  // Create dynamic labels based on labelCount and timeFrame (in minutes)
+  const interval = timeFrame / (labelCount - 1);  // calculate the interval between each label
+  for (let i = 0; i < labelCount; i++) {
+    const label = new Date(now.getTime() - i * interval * 60 * 1000); // labels spaced apart by interval
     labels.push(label);
   }
 
-  const initialData = Array(3).fill(null);
+  const initialData = Array(labelCount).fill(null);
 
   const [chartData, setChartData] = useState({
     labels: labels,
@@ -55,7 +57,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime }) => 
         pointBorderColor: lineColor || baseLineColor,
         pointBackgroundColor: lineColor || baseLineColor,
         pointRadius: 0,
-        fill: true, 
+        fill: true,
         backgroundColor: (context) => {
           const chart = context.chart;
           const { ctx, chartArea } = chart;
@@ -64,12 +66,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime }) => 
             return null;
           }
 
-          const gradient = ctx.createLinearGradient(
-            0,
-            chartArea.top,
-            0,
-            chartArea.bottom
-          );
+          const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
           gradient.addColorStop(0, gradientColors[0]);
           gradient.addColorStop(1, gradientColors[1]);
 
@@ -90,10 +87,9 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime }) => 
       const updatedLabels = [...prevData.labels, now];
       const updatedData = [...prevData.datasets[0].data, newData];
 
-      const cutTime = new Date(now.getTime() - duration);
-
-      const filteredLabels = updatedLabels.filter((label) => label >= cutTime);
-      const filteredData = updatedData.slice(updatedData.length - filteredLabels.length);
+      // Maintain only the last 'labelCount' labels and data points
+      const filteredLabels = updatedLabels.slice(-labelCount);
+      const filteredData = updatedData.slice(-labelCount);
 
       return {
         labels: filteredLabels,
@@ -116,12 +112,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime }) => 
                 return null;
               }
 
-              const gradient = ctx.createLinearGradient(
-                0,
-                chartArea.top,
-                0,
-                chartArea.bottom
-              );
+              const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
               gradient.addColorStop(0, gradientColors[0]);
               gradient.addColorStop(1, gradientColors[1]);
 
@@ -142,15 +133,15 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime }) => 
       x: {
         type: "time",
         time: {
-          unit: "hour",
+          unit: "minute", // Set unit to minute for the fixed time intervals
           displayFormats: {
-            hour: "hh:mm a",
+            minute: "hh:mm a",
           },
         },
-        min: now.getTime() - 3 * 60 * 60 * 1000,
+        min: now.getTime() - timeFrame * 60 * 1000, // Start from 'timeFrame' minutes ago
         max: now.getTime(),
         ticks: {
-          color: 'black',  
+          color: 'black',
         },
         grid: {
           display: false,
@@ -160,7 +151,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime }) => 
         beginAtZero: true,
         suggestedMax: Math.max(...chartData.datasets[0].data) * 1.5,
         ticks: {
-          color: 'black',  
+          color: 'black',
         },
         grid: {
           display: false,
@@ -181,7 +172,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime }) => 
             if (tooltipItem.raw === null) {
               return "";
             }
-            return tooltipItem.data; // Show local time in tooltip
+            return tooltipItem.data;
           },
         },
       },
@@ -203,4 +194,3 @@ const LineGraph = ({ name, data, gradientColors, lineColor, referenceTime }) => 
 };
 
 export default LineGraph;
-

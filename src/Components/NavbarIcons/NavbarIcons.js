@@ -36,7 +36,7 @@ function NavbarIcons() {
   return (
     <div className="icons w-full sm:w-auto flex items-center justify-around sm:justify-evenly gap-2 sm:gap-4 text-xl text-[#6c757d]">
       {/* Dark Mode Toggle */}
-      <div
+      {/* <div
         onClick={toggleDarkMode}
         className="relative w-8 h-4 sm:w-11 sm:h-6 flex items-center rounded-full bg-gray-300 dark:bg-gray-600 transition-colors duration-300 cursor-pointer"
       >
@@ -56,7 +56,7 @@ function NavbarIcons() {
           <div className="w-3 h-3 sm:w-4 sm:h-4 bg-white rounded-full"></div>
           <FaSun className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />
         </div>
-      </div>
+      </div> */}
 
       {/* Fullscreen Icon */}
       <span
@@ -67,14 +67,14 @@ function NavbarIcons() {
       </span>
 
       {/* Alert Icon */}
-      <span className="alert w-8 h-8 sm:w-12 sm:h-12 rounded-full flex justify-center items-center hover:text-[#3b7ddd] cursor-pointer">
+      {/* <span className="alert w-8 h-8 sm:w-12 sm:h-12 rounded-full flex justify-center items-center hover:text-[#3b7ddd] cursor-pointer">
         <IoMdAlert />
-      </span>
+      </span> */}
 
       {/* Notifications Icon */}
-      <span className="notification w-8 h-8 sm:w-12 sm:h-12 rounded-full flex justify-center items-center hover:text-[#3b7ddd] cursor-pointer">
+      {/* <span className="notification w-8 h-8 sm:w-12 sm:h-12 rounded-full flex justify-center items-center hover:text-[#3b7ddd] cursor-pointer">
         <IoMdNotifications />
-      </span>
+      </span> */}
     </div>
   );
 }
