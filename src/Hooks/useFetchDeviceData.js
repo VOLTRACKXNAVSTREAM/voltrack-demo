@@ -19,7 +19,7 @@ const useFetchDeviceData = (deviceId) => {
 
   useEffect(() => {
     // Initialize WebSocket connection
-    const socket = io('http://localhost:3000', {
+    const socket = io('http://35.154.29.77:3000', {
       query: { userId, deviceId }, // Send deviceId and userId as query parameters
     });
 

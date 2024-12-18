@@ -22,7 +22,7 @@ function ContentPage({userId,selectedOverview}) {
       <Routes>
         {/* <Route path="/" element={<Overview userId={userId}/>}/> */}
         <Route path="/" element={<Overview userId={userId} selectedOverview={selectedOverview}/>}/>
-        <Route path="/analysis" element={<Analysis/>}/>
+        {/* <Route path="/analysis" element={<Analysis/>}/> */}
         <Route path="/chart" element={<Chart/>}/>
         <Route path="/data" element={<Data/>}/>
         <Route path="/transaction" element={<Transaction/>}/>

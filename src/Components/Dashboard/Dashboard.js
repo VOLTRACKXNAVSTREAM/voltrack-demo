@@ -29,7 +29,7 @@ function Dashboard() {
             className="hidden dark:block w-2/3 md:w-1/2"
           />
         </div>
-        <Select />
+        {/* <Select /> */}
         {DashboardData.map((item, index) => (
           <DashboardItem
             item={item}

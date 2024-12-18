@@ -17,11 +17,11 @@ const DashboardData = [
         link: "/",
         submenu: [],
       },
-      {
-        name: "Analysis",
-        link: "/analysis",
+      // {
+      //   name: "Analysis",
+      //   link: "/analysis",
         
-      },
+      // },
     ],
   },
   // {
@@ -58,37 +58,37 @@ const DashboardData = [
   //       },
   //     ],
   // },
-  {
-    icon:<IoSettingsOutline/>,
-    name: "Setting",
-    link: "/setting",
-    submenu: [
-        {
-          name: "My Account",
-          link: "/accounts",
-        },
-        {
-          name: "Connected Devices",
-          link: "/devices",
-          submenu: [],
-        },
-        // {
-        //     name: "Plans",
-        //     link: "/premium-plans",
-        //     submenu: [],
-        //   },
-          {
-            name: "Billing and Invoices",
-            link: "/billing-invoice",
-            submenu: [],
-          },
-          {
-            name: "Give Feedback",
-            link: "/feedback",
-            submenu: [],
-          },
-      ],
-  },
+  // {
+  //   icon:<IoSettingsOutline/>,
+  //   name: "Setting",
+  //   link: "/setting",
+  //   submenu: [
+  //       {
+  //         name: "My Account",
+  //         link: "/accounts",
+  //       },
+  //       {
+  //         name: "Connected Devices",
+  //         link: "/devices",
+  //         submenu: [],
+  //       },
+  //       // {
+  //       //     name: "Plans",
+  //       //     link: "/premium-plans",
+  //       //     submenu: [],
+  //       //   },
+  //         {
+  //           name: "Billing and Invoices",
+  //           link: "/billing-invoice",
+  //           submenu: [],
+  //         },
+  //         {
+  //           name: "Give Feedback",
+  //           link: "/feedback",
+  //           submenu: [],
+  //         },
+  //     ],
+  // },
   // {
   //   icon:<VscGraph/>,
   //   name: "Utility",

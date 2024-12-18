@@ -39,7 +39,7 @@ function Overview1({ userId }) {
           lGraph={<LineGraph name={"Temperature"} data={sht30Data.Temperature || []} gradientColors={["rgba(255, 99, 71, 0.5)", "rgba(255, 159, 64, 0.1)"]} lineColor={getBaseColorFromRgba("rgba(255, 99, 71, 0.5)")} xLabelNum={3} referenceTime={timeStamp} />}
           title="Temperature"
           unit={"°C"}
-          value={sht30Data.Temperature !== undefined ? Math.abs(sht30Data.Temperature) : null}
+          value={sht30Data.Temperature !== undefined ? sht30Data.Temperature : null}
           graphContainerClass="h-full"
         />
         <MainPageCards
