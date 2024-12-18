@@ -61,7 +61,7 @@ function Overview1({ userId }) {
           lGraph={<LineGraph name={"Power"} data={GCE_RS485.VoltageMV && GCE_RS485.CurrentMA ? [Math.abs(GCE_RS485.VoltageMV * GCE_RS485.CurrentMA) / 1000000] : []} gradientColors={["rgba(111, 0, 255, 0.5)", "rgba(196, 144, 238, 0.1)"]} lineColor={getBaseColorFromRgba("rgba(111, 0, 255, 0.5)")} xLabelNum={3} referenceTime={timeStamp} />}
           title="Power Usage"
           unit={"W"}
-          value={GCE_RS485.VoltageMV && GCE_RS485.CurrentMA ? Math.abs((GCE_RS485.VoltageMV * GCE_RS485.CurrentMA) / 1000000) : null}
+          value={GCE_RS485.VoltageMV !== undefined && GCE_RS485.CurrentMA !== undefined ? Math.abs((GCE_RS485.VoltageMV * GCE_RS485.CurrentMA) / 1000000) : null}
           graphContainerClass="h-full"
         />
       </div>
@@ -71,7 +71,7 @@ function Overview1({ userId }) {
         <MainPageCards
           icon={<TbCircuitVoltmeter size={50} />}
           graph={<CircularProgressBar value={88} max={100} />}
-          title="Voltage"
+          title="Total Voltage"
           unit="V"
           lGraph={<LineGraph name={"Voltage"} data={GCE_RS485.VoltageMV ? [Math.abs(GCE_RS485.VoltageMV) / 1000] : []} gradientColors={["rgba(0, 68, 255, 0.9)", "rgba(113, 146, 235, 0.1)"]} lineColor={getBaseColorFromRgba("rgba(0, 68, 255, 0.9)")} xLabelNum={6} referenceTime={timeStamp} />}
           value={GCE_RS485.VoltageMV !== undefined ? Math.abs(GCE_RS485.VoltageMV) / 1000 : null}
@@ -79,7 +79,7 @@ function Overview1({ userId }) {
         <MainPageCards
           icon={<TbCircuitVoltmeter size={50} />}
           graph={<CircularProgressBar value={88} max={100} />}
-          title="Current"
+          title="Current Draw"
           unit="A"
           lGraph={<LineGraph name={"Current"} data={GCE_RS485.CurrentMA ? [Math.abs(GCE_RS485.CurrentMA) / 1000] : []} gradientColors={["rgba(139, 0, 0, 0.5)", "rgba(255, 99, 71, 0.1)"]} lineColor={getBaseColorFromRgba("rgba(139, 0, 0, 0.5)")} xLabelNum={6} referenceTime={timeStamp} />}
           value={GCE_RS485.CurrentMA !== undefined ? Math.abs(GCE_RS485.CurrentMA) / 1000 : null}
