@@ -3,8 +3,8 @@ import { useLocation } from "react-router-dom";
 import DashboardData from "../../Constants/DashboardData";
 import Select from "./Select";
 import DashboardItem from "./DashboardItem";
-import logo from "../../Images/logo-white.png";
-import darklogo from "../../Images/logo-dark.png";
+import logo from "../../Images/white_logo.svg";
+import darklogo from "../../Images/dark_logo.svg";
 
 function Dashboard() {
   const [activeItem, setActiveItem] = useState(null);
@@ -15,18 +15,19 @@ function Dashboard() {
   };
 
   return (
-    <div className="w-[16vw] lg:w-[16vw] md:w-[16vw] sm:w-[25vw] h-full text-[#1F2937] bg-[rgba(244,246,250,255)] dark:bg-[#0c0f17] dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
+    <div className="w-[16vw] lg:w-[16vw] md:w-[16vw] sm:w-[25vw] h-full text-[#1F2937] bg-white dark:bg-neutral-950 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
       <ul className="p-2 font-sans text-sm font-semibold">
         <div className="h-18 flex items-center justify-center">
           <img
             src={logo}
             alt="Logo"
-            className="block dark:hidden w-2/3 md:w-1/2"
+            className="block dark:hidden"
+            style={{ width: "200px" }}
           />
           <img
             src={darklogo}
             alt="DarkLogo"
-            className="hidden dark:block w-2/3 md:w-1/2"
+            className="hidden dark:block"
           />
         </div>
         {/* <Select /> */}

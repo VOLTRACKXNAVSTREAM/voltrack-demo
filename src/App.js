@@ -1,5 +1,5 @@
 import Dashboard from "./Components/Dashboard/Dashboard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ContentPage from "./Components/ContentPage/ContentPage";
 import Navbar from "./Components/NavBar/Navbar";
 import { Navigate } from "react-router-dom";
@@ -16,10 +16,15 @@ function App() {
 
   const tokenHash = localStorage.getItem("authToken");
 
+  useEffect(() => {
+    if (window.innerWidth <= 1024) {
+      setDashboardActive(false);
+    }
+  }, [window.innerWidth]);
 
   // if (tokenHash !== null){
   return (
-    <div className="w-full min-h-screen flex bg-[rgba(252,252,252,255)] dark:bg-[#121212] dark:text-slate-200 border-5 border-solid border-gray-300 dark:border-gray-700">
+    <div className="w-full min-h-screen flex bg-neutral-100 dark:bg-black dark:text-slate-200 border-5 border-solid border-gray-300 dark:border-gray-700">
       {/* Adjusting for Dashboard when active */}
       {dashboardActive && (
         <div className="fixed left-0 top-0 h-full z-20">

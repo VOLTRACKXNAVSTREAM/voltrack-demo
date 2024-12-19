@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../../Images/logo-white-log.png";
+import logo from "../../../Images/white_logo.svg";
 import { useNavigate } from "react-router-dom";
 function ResetPassword() {
   const navigate = useNavigate();

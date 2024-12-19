@@ -10,7 +10,7 @@ function IndicatorBar({icon,content, bgIcon,value}) {
                 {" "}
                 {icon}
               </span>
-              <span className="text-m font-medium text-gray-500"> {content}</span>
+              <span className="text-sm font-medium text-black-500"> {content}</span>
             </div>
            
               <div className={`justify-end flex gap-2 p-2 items-center rounded-full ${value?"bg-red-600":"bg-green-500"}`}>

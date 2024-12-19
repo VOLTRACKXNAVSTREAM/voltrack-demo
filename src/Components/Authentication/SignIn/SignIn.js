@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../../../Images/logo-white-log.png";
+import logo from "../../../Images/white_logo.svg";
 
 function SignIn() {
   const [email, setEmail] = useState('');

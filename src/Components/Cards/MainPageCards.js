@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import CircularProgress from '@mui/material/CircularProgress'; // Import the Activity Indicator
 
-function MainPageCards({ icon, graph, lGraph, title, value, unit, graphContainerClass }) {
+function MainPageCards({ icon, graph, lGraph, title, value, unit, graphContainerClass, valueColor = "text-black-600" }) {
   const [dataValue, setDataValue] = React.useState(null);
   const [unitName, setUnitName] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true); // Track loading state
@@ -9,7 +9,7 @@ function MainPageCards({ icon, graph, lGraph, title, value, unit, graphContainer
   useEffect(() => {
     // Check if the value is valid (not null, undefined, or NaN)
     if (value !== null && value !== undefined && !isNaN(value)) {
-      setDataValue(value === 0 ? 0 : Math.abs(value)); // Handle 0 explicitly
+      setDataValue(value === 0 ? 0 : value); // Handle 0 explicitly
       setUnitName(unit);
       setIsLoading(false); // Set loading to false once data is valid
     } else {
@@ -20,15 +20,18 @@ function MainPageCards({ icon, graph, lGraph, title, value, unit, graphContainer
   }, [value, unit]);
 
   return (
-    <div className="bg-white dark:bg-[#0d0e0f] border border-gray-300 dark:border-gray-700 w-full h-full flex flex-col p-5 rounded-xl">
+    <div className="bg-white dark:bg-opacity-10 shadow-md w-full h-full flex flex-col p-3 rounded-xl">
       {/* Upper div contains progress bar and icon */}
-      <div className="flex items-center justify-between h-auto border-b-2 dark:border-gray-600 pb-2">
-        <div className="text-blue-600 dark:text-blue-400 font-semibold">{title}</div>
+      <div className="flex items-center justify-between h-auto border-b-2 dark:border-neutral-600 pb-2">
+        <div className="text-black-600 dark:text-white-400 font-semibold">{title}</div>
       </div>
 
       {/* Value Section */}
       <div className="my-2 h-auto">
-        <div className="text-2xl font-semibold dark:text-slate-200">
+        <div 
+        className={`text-2xl font-bold dark:text-white-400`}
+        style={{ color: valueColor }}
+        >
           {isLoading ? (
             <div className="flex items-center">
               <span className="mr-2">Fetching Data</span>

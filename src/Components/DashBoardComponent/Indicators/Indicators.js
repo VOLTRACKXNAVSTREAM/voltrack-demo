@@ -38,7 +38,7 @@ function Indicators({ data }) {
   };
 
   return (
-    <div className="px-3 flex h-96 flex-col lg:w-full border border-gray-300 dark:border-gray-700 md:w-full sm:w-full shadow-sm gap-2 bg-white dark:bg-[#0d0e0f] rounded-xl p-2">
+    <div className="px-1 py-4 flex h-96 flex-col lg:w-full dark:border-gray-700 md:w-full sm:w-full shadow-sm gap-2 bg-white dark:bg-opacity-10 rounded-xl p-2">
       <div className="text-gray-800 dark:text-blue-400 font-semibold p-2 border-b dark:border-gray-600">
         Alerts & Warnings
       </div>
@@ -48,7 +48,7 @@ function Indicators({ data }) {
           <CircularProgress size={14} className="mr-2" /> {/* Activity Indicator */}
         </div>
       ) : (
-        <div className="px-2 alert h-[90%] overflow-hidden shadow-md rounded-xl overflow-y-scroll no-scrollbar">
+        <div className="px-2 alert h-[90%] overflow-hidden rounded-xl overflow-y-scroll no-scrollbar text-bg-black">
           {/* Map Charging, Discharging, and Heater Status */}
           {mapData(data.Status, "Status")}
 

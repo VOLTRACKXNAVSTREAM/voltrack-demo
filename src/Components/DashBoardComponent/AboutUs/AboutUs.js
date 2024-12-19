@@ -5,7 +5,7 @@ import { RiInstagramFill } from "react-icons/ri";
 import { RiLinkedinBoxFill } from "react-icons/ri";
 import { BsYoutube } from "react-icons/bs";
 import AboutUsFooterData from "../../../Constants/AboutUsFooterData";
-import logo from "../../../Images/2.svg";
+import logo from "../../../Images/white_logo.svg";
 
 // import { BsLightningFill } from "react-icons/bs";
 function AboutUs() {

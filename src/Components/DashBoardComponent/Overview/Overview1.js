@@ -25,7 +25,7 @@ function Overview1({ userId }) {
   const timeStamp = useSelector(state => state.data.timestamp);
 
   return (
-    <div className="m-2 py-1 flex flex-col gap-4 overflow-y-scroll no-scrollbar h-full">
+    <div className="m-2 flex flex-col gap-4 overflow-y-scroll no-scrollbar h-full pb-5 pt-5">
       {/* Header Row */}
       {/* <div className="px-1">
         <HelloDiv name={"Overview"} />
@@ -41,6 +41,7 @@ function Overview1({ userId }) {
           unit={"°C"}
           value={sht30Data.Temperature !== undefined ? sht30Data.Temperature : null}
           graphContainerClass="h-full"
+          valueColor={getBaseColorFromRgba("rgba(255, 99, 71, 0.5)")}
         />
         <MainPageCards
           icon={<TbCircuitVoltmeter size={50} />}
@@ -48,6 +49,7 @@ function Overview1({ userId }) {
           title="State of Health (SOH)"
           value={GCE_RS485.SOH !== undefined ? GCE_RS485.SOH : null}
           graphContainerClass="h-full"
+          valueColor={getBaseColorFromRgba("rgba(75, 192, 192, 0.9)")}
         />
         <MainPageCards
           icon={<TbCircuitVoltmeter size={50} />}
@@ -55,14 +57,21 @@ function Overview1({ userId }) {
           title="State of Charge (SOC)"
           value={GCE_RS485.SOC !== undefined ? GCE_RS485.SOC : null}
           graphContainerClass="h-full"
+          valueColor={getBaseColorFromRgba("rgba(34, 139, 34, 0.5)")}
         />
         <MainPageCards
           icon={<TbCircuitVoltmeter size={50} />}
-          lGraph={<LineGraph name={"Power"} data={GCE_RS485.VoltageMV && GCE_RS485.CurrentMA ? [Math.abs(GCE_RS485.VoltageMV * GCE_RS485.CurrentMA) / 1000000] : []} gradientColors={["rgba(111, 0, 255, 0.5)", "rgba(196, 144, 238, 0.1)"]} lineColor={getBaseColorFromRgba("rgba(111, 0, 255, 0.5)")} xLabelNum={3} referenceTime={timeStamp} labelCount={3} timeFrame={3} />}
+          lGraph={<LineGraph name={"Power"} data={
+            GCE_RS485.VoltageMV && GCE_RS485.CurrentMA < 0 ? [(Math.abs(GCE_RS485.VoltageMV * GCE_RS485.CurrentMA) / 1000000)] : 0} 
+            gradientColors={["rgba(111, 0, 255, 0.5)", "rgba(196, 144, 238, 0.1)"]} lineColor={getBaseColorFromRgba("rgba(111, 0, 255, 0.5)")} xLabelNum={3} referenceTime={timeStamp} labelCount={3} timeFrame={3} />}
           title="Power Usage"
           unit={"W"}
-          value={GCE_RS485.VoltageMV !== undefined && GCE_RS485.CurrentMA !== undefined ? Math.abs((GCE_RS485.VoltageMV * GCE_RS485.CurrentMA) / 1000000) : null}
+          value={
+            GCE_RS485.VoltageMV !== undefined && GCE_RS485.CurrentMA !== undefined ? 
+            Math.abs((GCE_RS485.VoltageMV * GCE_RS485.CurrentMA) / 1000000).toFixed(2) :
+            null}
           graphContainerClass="h-full"
+          valueColor={getBaseColorFromRgba("rgba(111, 0, 255, 0.5)")}
         />
       </div>
 
@@ -75,14 +84,22 @@ function Overview1({ userId }) {
           unit="V"
           lGraph={<LineGraph name={"Voltage"} data={GCE_RS485.VoltageMV ? [Math.abs(GCE_RS485.VoltageMV) / 1000] : []} gradientColors={["rgba(0, 68, 255, 0.9)", "rgba(113, 146, 235, 0.1)"]} lineColor={getBaseColorFromRgba("rgba(0, 68, 255, 0.9)")} xLabelNum={6} referenceTime={timeStamp} labelCount={5} timeFrame={8}/>}
           value={GCE_RS485.VoltageMV !== undefined ? Math.abs(GCE_RS485.VoltageMV) / 1000 : null}
+          valueColor={getBaseColorFromRgba("rgba(0, 68, 255, 0.9)")}
         />
         <MainPageCards
           icon={<TbCircuitVoltmeter size={50} />}
           graph={<CircularProgressBar value={88} max={100} />}
-          title="Current Draw"
+          title={
+            GCE_RS485.CurrentMA < 0 && GCE_RS485.CurrentMA !== undefined ? 
+            "Current (Discharging)" : 
+            GCE_RS485.CurrentMA > 0 && GCE_RS485.CurrentMA !== undefined ?
+            "Current (Charging)" :
+            "Current"
+          }
           unit="A"
-          lGraph={<LineGraph name={"Current"} data={GCE_RS485.CurrentMA ? [Math.abs(GCE_RS485.CurrentMA) / 1000] : []} gradientColors={["rgba(139, 0, 0, 0.5)", "rgba(255, 99, 71, 0.1)"]} lineColor={getBaseColorFromRgba("rgba(139, 0, 0, 0.5)")} xLabelNum={6} referenceTime={timeStamp} labelCount={5} timeFrame={8}/>}
-          value={GCE_RS485.CurrentMA !== undefined ? Math.abs(GCE_RS485.CurrentMA) / 1000 : null}
+          lGraph={<LineGraph name={"Current"} data={GCE_RS485.CurrentMA ? [(GCE_RS485.CurrentMA) / 1000] : []} gradientColors={["rgba(139, 0, 0, 0.5)", "rgba(255, 99, 71, 0.1)"]} lineColor={getBaseColorFromRgba("rgba(139, 0, 0, 0.5)")} xLabelNum={6} referenceTime={timeStamp} labelCount={5} timeFrame={8}/>}
+          value={GCE_RS485.CurrentMA !== undefined ? (GCE_RS485.CurrentMA) / 1000 : null}
+          valueColor={getBaseColorFromRgba("rgba(139, 0, 0, 0.5)")}
         />
       </div>
 

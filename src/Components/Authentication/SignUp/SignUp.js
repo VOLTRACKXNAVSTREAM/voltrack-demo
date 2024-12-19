@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../../../Images/logo-white.png";
+import logo from "../../../Images/white_logo.svg";
 function SignUp() {
   return (
     <div className="bg-slate-50 min-h-full w-full flex justify-between items-center">

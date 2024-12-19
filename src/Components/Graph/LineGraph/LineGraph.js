@@ -36,6 +36,22 @@ const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCoun
   const now = new Date();
   const interval = timeFrame / (labelCount - 1);  // Time between each label in minutes
   const labels = [];
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    // Listen for theme changes
+    const handleThemeChange = () => {
+      setTheme(document.body.classList.contains("dark") ? "dark" : "light");
+    };
+
+    // Set initial theme based on the body class
+    handleThemeChange();
+    window.addEventListener("change", handleThemeChange);
+
+    return () => {
+      window.removeEventListener("change", handleThemeChange);
+    };
+  }, []);
 
   // Create labels for the x-axis, evenly spaced within the given timeFrame
   for (let i = 0; i < labelCount; i++) {
@@ -50,7 +66,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCoun
         label: name,
         data: Array(labelCount).fill(null),
         borderColor: lineColor || baseLineColor,
-        lineTension: 0.5,
+        lineTension: 0,
         borderWidth: 1.5,
         pointBorderColor: lineColor || baseLineColor,
         pointBackgroundColor: lineColor || baseLineColor,
@@ -94,7 +110,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCoun
             data: updatedData,
             borderColor: lineColor || baseLineColor,
             borderWidth: 1.5,
-            lineTension: 0.5,
+            lineTension: 0,
             pointBorderColor: lineColor || baseLineColor,
             pointHoverBorderWidth: 1,
             pointRadius: 1,
@@ -135,7 +151,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCoun
         min: now.getTime() - timeFrame * 60 * 1000, // Starting point based on time frame
         max: now.getTime(), // End the graph at the current time
         ticks: {
-          color: 'black',
+          color: theme === "dark" ? "white" : "black",
         },
         grid: {
           display: false,
@@ -145,7 +161,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCoun
         beginAtZero: true,
         suggestedMax: Math.max(...chartData.datasets[0].data) * 1.5,
         ticks: {
-          color: 'black',
+          color: theme === "dark" ? "white" : "black",
         },
         grid: {
           display: false,
