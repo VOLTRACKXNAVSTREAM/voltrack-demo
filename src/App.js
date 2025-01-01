@@ -1,28 +1,35 @@
+// File: /Users/sujeevgyawali/Desktop/voltrack-client/src/App.js
+import React, { useEffect, useState } from "react";
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 import Dashboard from "./Components/Dashboard/Dashboard";
-import { useEffect, useState } from "react";
 import ContentPage from "./Components/ContentPage/ContentPage";
 import Navbar from "./Components/NavBar/Navbar";
-import { Navigate } from "react-router-dom";
 import useFetchDeviceData from './Hooks/useFetchDeviceData';
 
-function App() {
-  const [userId, setUserId] = useState("Navstream");
+function Homepage() {
+  const userId = "Navstream";
   const [dashboardActive, setDashboardActive] = useState(true);
   const [selectedOverview, setSelectedOverview] = useState(0);
-  const deviceId = 'voltrack20241019'; // Replace with your device ID or fetch it dynamically
+  const deviceId = 'voltrack20241019';
 
-    // Call the custom hook
+  // Get authentication state from Redux
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  // Call the custom hook
   useFetchDeviceData(deviceId);
-
-  const tokenHash = localStorage.getItem("authToken");
 
   useEffect(() => {
     if (window.innerWidth <= 1024) {
       setDashboardActive(false);
     }
-  }, [window.innerWidth]);
+  }, []);
 
-  // if (tokenHash !== null){
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
     <div className="w-full min-h-screen flex bg-neutral-100 dark:bg-black dark:text-slate-200 border-5 border-solid border-gray-300 dark:border-gray-700">
       {/* Adjusting for Dashboard when active */}
@@ -45,14 +52,13 @@ function App() {
           />
         </div>
 
-        {/* The content page scrolls, with space for the Navbar */}
-        <div className="flex-1 mt-16 overflow-y-scroll no-scrollbar">
-          <ContentPage userId={userId} selectedOverview={selectedOverview} />
+        {/* Main content area */}
+        <div className="flex-1 mt-16">
+          <ContentPage />
         </div>
       </div>
     </div>
   );
-// }
 }
 
-export default App;
+export default Homepage;

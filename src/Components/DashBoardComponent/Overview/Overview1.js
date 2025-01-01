@@ -67,9 +67,10 @@ function Overview1({ userId }) {
           title="Power Usage"
           unit={"W"}
           value={
-            GCE_RS485.VoltageMV !== undefined && GCE_RS485.CurrentMA !== undefined ? 
+            GCE_RS485.VoltageMV !== undefined && GCE_RS485.CurrentMA < 0 ? 
             Math.abs((GCE_RS485.VoltageMV * GCE_RS485.CurrentMA) / 1000000).toFixed(2) :
-            null}
+            GCE_RS485.VoltageMV !== undefined && GCE_RS485.CurrentMA > 0 ?
+            0 : null}
           graphContainerClass="h-full"
           valueColor={getBaseColorFromRgba("rgba(111, 0, 255, 0.5)")}
         />
