@@ -1,9 +1,8 @@
 // File: /Users/sujeevgyawali/Desktop/voltrack-client/src/App.js
 import React, { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import Dashboard from "./Components/Dashboard/Dashboard";
-import ContentPage from "./Components/ContentPage/ContentPage";
 import Navbar from "./Components/NavBar/Navbar";
 import useFetchDeviceData from './Hooks/useFetchDeviceData';
 
@@ -32,7 +31,6 @@ function Homepage() {
 
   return (
     <div className="w-full min-h-screen flex bg-neutral-100 dark:bg-black dark:text-slate-200 border-5 border-solid border-gray-300 dark:border-gray-700">
-      {/* Adjusting for Dashboard when active */}
       {dashboardActive && (
         <div className="fixed left-0 top-0 h-full z-20">
           <Dashboard />
@@ -40,7 +38,6 @@ function Homepage() {
       )}
       
       <div className={`flex flex-col flex-1 ${dashboardActive ? 'ml-[16vw]' : ''}`}>
-        {/* Navbar stays fixed at the top */}
         <div className="fixed top-0 z-10"
           style={{ width: dashboardActive ? 'calc(100vw - 16vw)' : '100vw' }}>
           <Navbar
@@ -52,9 +49,8 @@ function Homepage() {
           />
         </div>
 
-        {/* Main content area */}
         <div className="flex-1 mt-16">
-          <ContentPage />
+          <Outlet />
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ function Dashboard() {
             className="hidden dark:block"
           />
         </div>
-        {/* <Select /> */}
+        <Select />
         {DashboardData.map((item, index) => (
           <DashboardItem
             item={item}

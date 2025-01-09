@@ -12,7 +12,6 @@ import {
   LineController,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { useSelector } from "react-redux";
 
 ChartJS.register(
   CategoryScale,
@@ -31,50 +30,48 @@ function getBaseColorFromRgba(rgbaColor) {
   return `rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`;
 }
 
-const MAX_DATA_POINTS = 50;  // Limit the number of data points to prevent memory issues
-
-const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCount }) => {
+const LineGraphStatic = ({ 
+  name, 
+  data, 
+  gradientColors, 
+  lineColor, 
+  timeFrame, 
+  labelCount = 30,  
+  isMonthlyView = false  
+}) => {
   const baseLineColor = getBaseColorFromRgba(gradientColors[0]);
-  const { selectedDevice } = useSelector((state) => state.device);
-
-  const now = new Date();
-  const interval = timeFrame / (labelCount - 1);  // Time between each label in minutes
-  const labels = [];
   const [theme, setTheme] = useState("light");
 
-  useEffect(() => {
-    // Listen for theme changes
-    const handleThemeChange = () => {
-      setTheme(document.body.classList.contains("dark") ? "dark" : "light");
-    };
+  const generateLabels = () => {
+    if (isMonthlyView) {
+      return Array.from({ length: labelCount }, (_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - (labelCount - 1 - i));
+        return date;
+      });
+    } else {
+      const now = new Date();
+      const interval = timeFrame / (labelCount - 1);
+      return Array.from({ length: labelCount }, (_, i) => 
+        new Date(now.getTime() - i * interval * 60 * 1000)
+      );
+    }
+  };
 
-    // Set initial theme based on the body class
-    handleThemeChange();
-    window.addEventListener("change", handleThemeChange);
-
-    return () => {
-      window.removeEventListener("change", handleThemeChange);
-    };
-  }, []);
-
-  // Create labels for the x-axis, evenly spaced within the given timeFrame
-  for (let i = 0; i < labelCount; i++) {
-    const label = new Date(now.getTime() - i * interval * 60 * 1000);
-    labels.push(label);
-  }
+  const labels = generateLabels();
 
   const [chartData, setChartData] = useState({
     labels: labels,
     datasets: [
       {
         label: name,
-        data: Array(labelCount).fill(null),
+        data: isMonthlyView ? data : Array(labelCount).fill(null),
         borderColor: lineColor || baseLineColor,
-        lineTension: 0,
+        lineTension: 0.4,
         borderWidth: 1.5,
         pointBorderColor: lineColor || baseLineColor,
         pointBackgroundColor: lineColor || baseLineColor,
-        pointRadius: 0,
+        pointRadius: isMonthlyView ? 3 : 0,
         fill: true,
         backgroundColor: (context) => {
           const chart = context.chart;
@@ -96,35 +93,41 @@ const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCoun
   const chartRef = useRef();
 
   useEffect(() => {
-    // Reset chart data when device changes
-    if (selectedDevice) {
-      setChartData((prevData) => ({
-        ...prevData,
-        labels: labels,
-        datasets: [{
-          ...prevData.datasets[0],
-          data: Array(labelCount).fill(null)
-        }]
-      }));
-    }
-  }, [selectedDevice]);
-
-  useEffect(() => {
-    // Skip if data is undefined, null, or 0
-    if (data === undefined || data === null || data === 0) return;
+    if (!data) return;
 
     const newData = Math.abs(data);
 
     setChartData((prevData) => {
-      const updatedLabels = [now, ...prevData.labels.slice(0, MAX_DATA_POINTS - 1)];
-      const updatedData = [newData, ...prevData.datasets[0].data.slice(0, MAX_DATA_POINTS - 1)];
+      const updatedLabels = [...prevData.labels, new Date()];
+      const updatedData = [...prevData.datasets[0].data, newData];
 
       return {
         labels: updatedLabels,
         datasets: [
           {
-            ...prevData.datasets[0],
+            label: name,
+            fill: true,
             data: updatedData,
+            borderColor: lineColor || baseLineColor,
+            borderWidth: 1.5,
+            lineTension: 0.4,
+            pointBorderColor: lineColor || baseLineColor,
+            pointHoverBorderWidth: 1,
+            pointRadius: 1,
+            backgroundColor: (context) => {
+              const chart = context.chart;
+              const { ctx, chartArea } = chart;
+
+              if (!chartArea) {
+                return null;
+              }
+
+              const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+              gradient.addColorStop(0, gradientColors[0]);
+              gradient.addColorStop(1, gradientColors[1]);
+
+              return gradient;
+            },
           },
         ],
       };
@@ -133,20 +136,19 @@ const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCoun
     if (chartRef.current) {
       chartRef.current.update();
     }
-  }, [data, selectedDevice]);
+  }, [data, name, timeFrame, gradientColors, lineColor]);
 
   const options = {
     scales: {
       x: {
-        type: "time",
+        type: isMonthlyView ? "time" : "time",
         time: {
-          unit: "minute", 
+          unit: isMonthlyView ? "day" : "minute",
           displayFormats: {
+            day: "MMM dd",
             minute: "hh:mm a",
           },
         },
-        min: now.getTime() - timeFrame * 60 * 1000, 
-        max: now.getTime(), 
         ticks: {
           color: theme === "dark" ? "white" : "black",
         },
@@ -156,7 +158,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCoun
       },
       y: {
         beginAtZero: true,
-        suggestedMax: Math.max(...chartData.datasets[0].data.filter(val => val !== null)) * 1.5 || 10,
+        suggestedMax: Math.max(...chartData.datasets[0].data) * 1.5,
         ticks: {
           color: theme === "dark" ? "white" : "black",
         },
@@ -179,7 +181,7 @@ const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCoun
             if (tooltipItem.raw === null) {
               return "";
             }
-            return tooltipItem.raw;
+            return tooltipItem.data;
           },
         },
       },
@@ -189,7 +191,20 @@ const LineGraph = ({ name, data, gradientColors, lineColor, timeFrame, labelCoun
     },
   };
 
+  useEffect(() => {
+    const handleThemeChange = () => {
+      setTheme(document.body.classList.contains("dark") ? "dark" : "light");
+    };
+
+    handleThemeChange();
+    window.addEventListener("change", handleThemeChange);
+
+    return () => {
+      window.removeEventListener("change", handleThemeChange);
+    };
+  }, []);
+
   return <Line data={chartData} ref={chartRef} options={options} />;
 };
 
-export default LineGraph;
+export default LineGraphStatic;

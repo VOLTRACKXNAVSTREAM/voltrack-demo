@@ -29,7 +29,15 @@ const getBaseColorFromRgba = (rgbaColor) => {
   return `rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`;
 };
 
-const VariableLineGraph = ({ name, name2, data1, data2, gradientColors1, gradientColors2, lineColors }) => {
+const VariableLineGraph = ({ 
+  name = 'SOC', 
+  name2 = 'SOH', 
+  data1 = [], 
+  data2 = [], 
+  gradientColors1 = ['rgba(139, 0, 0, 0.5)', 'rgba(139, 0, 0, 0)'], 
+  gradientColors2 = ['rgba(75, 192, 192, 0.5)', 'rgba(75, 192, 192, 0)'], 
+  lineColors = ['rgb(139, 0, 0)', 'rgb(75, 192, 192)'] 
+}) => {
   const duration = 180 * 60 * 1000; // 3 hours in milliseconds
 
   const now = new Date();
@@ -44,12 +52,12 @@ const VariableLineGraph = ({ name, name2, data1, data2, gradientColors1, gradien
     datasets: [
       {
         label: name,
-        data: Array(3).fill(null),
-        borderColor: 'rgb(139, 0, 0)', // current line color
+        data: data1.length > 0 ? data1 : Array(3).fill(null),
+        borderColor: lineColors[0],
         lineTension: 0.5,
         borderWidth: 1.5,
-        pointBorderColor: 'rgb(139, 0, 0)', // point border color
-        pointBackgroundColor: 'rgb(139, 0, 0)', // point background color
+        pointBorderColor: lineColors[0],
+        pointBackgroundColor: lineColors[0],
         pointRadius: 0,
         fill: true,
         backgroundColor: (context) => {
@@ -74,12 +82,12 @@ const VariableLineGraph = ({ name, name2, data1, data2, gradientColors1, gradien
       },
       {
         label: name2,
-        data: Array(3).fill(null),
-        borderColor: 'rgb(75, 192, 192)', // voltage line color
+        data: data2.length > 0 ? data2 : Array(3).fill(null),
+        borderColor: lineColors[1],
         lineTension: 0.5,
         borderWidth: 1.5,
-        pointBorderColor: 'rgb(75, 192, 192)', // point border color
-        pointBackgroundColor: 'rgb(75, 192, 192)', // point background color
+        pointBorderColor: lineColors[1],
+        pointBackgroundColor: lineColors[1],
         pointRadius: 0,
         fill: true,
         backgroundColor: (context) => {
@@ -132,10 +140,10 @@ const VariableLineGraph = ({ name, name2, data1, data2, gradientColors1, gradien
             label: name,
             data: filteredData,
             fill: true,
-            borderColor: 'rgb(139, 0, 0)', // current line color
+            borderColor: lineColors[0],
             borderWidth: 1.5,
             lineTension: 0.5,
-            pointBorderColor: 'rgb(139, 0, 0)', // point border color
+            pointBorderColor: lineColors[0],
             pointRadius: 1,
             backgroundColor: (context) => {
               const chart = context.chart;
@@ -160,10 +168,10 @@ const VariableLineGraph = ({ name, name2, data1, data2, gradientColors1, gradien
             label: name2,
             data: filteredData2,
             fill: true,
-            borderColor: 'rgb(75, 192, 192)', // voltage line color
+            borderColor: lineColors[1],
             borderWidth: 1.5,
             lineTension: 0.5,
-            pointBorderColor: 'rgb(75, 192, 192)', // point border color
+            pointBorderColor: lineColors[1],
             pointRadius: 1,
             backgroundColor: (context) => {
               const chart = context.chart;
@@ -205,7 +213,7 @@ const VariableLineGraph = ({ name, name2, data1, data2, gradientColors1, gradien
         min: now.getTime() - 3 * 60 * 60 * 1000,
         max: now.getTime(),
         ticks: {
-          color: 'rgb(139, 0, 0)', // tick color for current line
+          color: lineColors[0],
           autoSkip: false,
           maxRotation: 0,
           minRotation: 0,
@@ -221,7 +229,7 @@ const VariableLineGraph = ({ name, name2, data1, data2, gradientColors1, gradien
         beginAtZero: true,
         suggestedMax: Math.max(...chartData.datasets[0].data, 100),
         ticks: {
-          color: 'rgb(75, 192, 192)', // tick color for voltage
+          color: lineColors[1],
         },
       },
     },
@@ -246,7 +254,11 @@ const VariableLineGraph = ({ name, name2, data1, data2, gradientColors1, gradien
     },
   };
 
-  return <Line data={chartData} ref={chartRef} options={options} />;
+  return (
+    <div className="w-full h-full">
+      <Line data={chartData} ref={chartRef} options={options} />
+    </div>
+  );
 };
 
 export default VariableLineGraph;

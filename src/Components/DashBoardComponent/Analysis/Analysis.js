@@ -5,8 +5,7 @@ import AnalysisComplex from "./AnalysisComplex";
 import AnalysisSimple from "./AnalysisSimple";
 import { HiOutlineViewGrid } from "react-icons/hi";
 
-
-function Analysis() {
+function Analysis({ userId, selectedOverview = 0 }) {
   const [analysisPageSwitcher, setAnalysisPageSwitcher] = useState(true);
 
   return (
@@ -17,8 +16,7 @@ function Analysis() {
         analysisPageSwitcher={analysisPageSwitcher}
         setAnalysisPageSwitcher={setAnalysisPageSwitcher}
       />
-      {/* {analysisPageSwitcher ? <AnalysisComplex /> : <AnalysisSimple />} */}
-      <AnalysisComplex/>
+      <AnalysisComplex userId={userId} selectedOverview={selectedOverview}/>
     </div>
   );
 }

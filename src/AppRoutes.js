@@ -14,8 +14,20 @@ import AuthRoute from './Components/Authentication/AuthRoute';
 
 // Main App Components
 import Homepage from './App';
-import Dashboard from './Components/Dashboard/Dashboard';
 import ContentPage from './Components/ContentPage/ContentPage';
+
+// Dashboard Components
+import Overview from './Components/DashBoardComponent/Overview/Overview';
+import Analysis from './Components/DashBoardComponent/Analysis/Analysis';
+import Chart from './Components/DashBoardComponent/Charts/Chart';
+import Data from './Components/DashBoardComponent/Data/Data';
+import Transaction from './Components/DashBoardComponent/Transaction/Transaction';
+import Utility from './Components/DashBoardComponent/Utility/Utility';
+import Setting from './Components/DashBoardComponent/Setting/Setting';
+import Update from './Components/DashBoardComponent/Update/Update';
+import Contact from './Components/DashBoardComponent/Contact/Contact';
+import AboutUs from './Components/DashBoardComponent/AboutUs/AboutUs';
+import PremiumPlans from './Components/DashBoardComponent/PremiumPlans/PremiumPlans';
 
 function AppRoutes() {
   return (
@@ -29,9 +41,21 @@ function AppRoutes() {
 
           {/* Protected Routes */}
           <Route element={<AuthRoute />}>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/content" element={<ContentPage />} />
+            <Route path="/" element={<Homepage />}>
+              <Route path="dashboard/*" element={<ContentPage />}>
+                <Route index element={<Overview />} />
+                <Route path="analysis" element={<Analysis />} />
+                <Route path="chart" element={<Chart />} />
+                <Route path="data" element={<Data />} />
+                <Route path="transaction" element={<Transaction />} />
+                <Route path="utility" element={<Utility />} />
+                <Route path="setting" element={<Setting />} />
+                <Route path="premium-plans" element={<PremiumPlans />} />
+                <Route path="updates" element={<Update />} />
+                <Route path="contact" element={<Contact />} />
+                <Route path="about" element={<AboutUs />} />
+              </Route>
+            </Route>
           </Route>
 
           {/* Catch-all route */}

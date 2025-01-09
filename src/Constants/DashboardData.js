@@ -9,127 +9,52 @@ import { MdOutlineBrowserUpdated } from "react-icons/md";
 const DashboardData = [
   {
     icon: <RxDashboard/>,
-    name: "DashBoard",
+    name: "Real-Time Data",
     link: "/dashboard",
-    submenu: [
-      {
-        name: "Real-Time Data",
-        link: "/",
-        submenu: [],
-      },
-      // {
-      //   name: "Analysis",
-      //   link: "/analysis",
-        
-      // },
-    ],
+    submenu: [],
+  },
+  {
+    icon: <VscGraph/>,
+    name: "Historic Data",
+    link: "/dashboard/analysis",
+    submenu: [],
   },
   // {
-  //   icon:<VscGraph/>,
-  //   name: "Statistic",
-  //   link: "/statistic",
-  //   submenu: [
-  //       {
-  //         name: "Data",
-  //         link: "/data",
-  //         submenu: [],
-  //       },
-  //       {
-  //         name: "Charts",
-  //         link: "/chart",
-  //         submenu: [],
-  //       },
-  //     ],
-  // },
-  // {
-  //   icon:<RiMoneyRupeeCircleLine/>,
-  //   name: "Finance",
-  //   link: "/finance",
-  //   submenu: [
-  //       {
-  //         name: "Transaction",
-  //         link: "/transaction",
-  //         submenu: [],
-  //       },
-  //       {
-  //         name: "Transaction Details",
-  //         link: "/transaction-details",
-  //         submenu: [],
-  //       },
-  //     ],
-  // },
-  // {
-  //   icon:<IoSettingsOutline/>,
-  //   name: "Setting",
-  //   link: "/setting",
-  //   submenu: [
-  //       {
-  //         name: "My Account",
-  //         link: "/accounts",
-  //       },
-  //       {
-  //         name: "Connected Devices",
-  //         link: "/devices",
-  //         submenu: [],
-  //       },
-  //       // {
-  //       //     name: "Plans",
-  //       //     link: "/premium-plans",
-  //       //     submenu: [],
-  //       //   },
-  //         {
-  //           name: "Billing and Invoices",
-  //           link: "/billing-invoice",
-  //           submenu: [],
-  //         },
-  //         {
-  //           name: "Give Feedback",
-  //           link: "/feedback",
-  //           submenu: [],
-  //         },
-  //     ],
-  // },
-  // {
-  //   icon:<VscGraph/>,
-  //   name: "Utility",
-  //   link: "/utility",
-  //   submenu: [
-  //       {
-  //         name: "RoadMap",
-  //         link: "/roadmap",
-  //         submenu: [],
-  //       },
-  //       {
-  //         name: "FAQs",
-  //         link: "/faqs",
-  //         submenu: [],
-  //       },
-  //       {
-  //           name: "Knowledge Base",
-  //           link: "/main",
-  //           submenu: [],
-  //         },
-         
-  //     ],
-  // },
-  // {
-  //   icon:<RiBloggerLine/>,
-  //   name: "Financial Reports & Blogs",
-  //   link: "/finance-report",
+  //   icon: <VscGraph/>,
+  //   name: "Chart",
+  //   link: "/dashboard/chart",
   //   submenu: [],
   // },
   // {
-  //   icon:<MdOutlineBrowserUpdated/>,
-  //   name: "Updates",
-  //   link: "#updates",
-   
+  //   icon: <RiMoneyRupeeCircleLine/>,
+  //   name: "Transaction",
+  //   link: "/dashboard/transaction",
+  //   submenu: [],
   // },
   // {
-  //   icon:<TiContacts/>,
-  //   name: "Contact Us",
-  //   link: "/contact",
+  //   icon: <IoSettingsOutline/>,
+  //   name: "Setting",
+  //   link: "/dashboard/setting",
+  //   submenu: [],
+  // },
+  // {
+  //   icon: <RiBloggerLine/>,
+  //   name: "Premium Plans",
+  //   link: "/dashboard/premium-plans",
+  //   submenu: [],
+  // },
+  // {
+  //   icon: <MdOutlineBrowserUpdated/>,
+  //   name: "Updates",
+  //   link: "/dashboard/updates",
+  //   submenu: [],
+  // },
+  // {
+  //   icon: <TiContacts/>,
+  //   name: "Contact",
+  //   link: "/dashboard/contact",
   //   submenu: [],
   // }
-  
 ];
+
 export default DashboardData;

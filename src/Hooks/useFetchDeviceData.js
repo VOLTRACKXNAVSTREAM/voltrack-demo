@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
 import {
   setSHT30,
@@ -13,51 +13,113 @@ import {
   setTimestamp,
 } from '../Redux/Slices/dataSlice';
 
-const useFetchDeviceData = (deviceId) => {
+const useFetchDeviceData = () => {
   const dispatch = useDispatch();
-  const userId = 'voltrackTest'; // User ID for the WebSocket connection
+  const { selectedDevice } = useSelector(state => state.device);
+  const userId = 'voltrackTest';
+  const socketServer = process.env.REACT_APP_SOCKET_SERVER;
+  const token = localStorage.getItem('token');
+  const username = localStorage.getItem('username');
+  const user = localStorage.getItem('userID');
 
-  useEffect(() => {
-    // Initialize WebSocket connection
-    const socket = io('http://35.154.29.77:3000', {
-      query: { userId, deviceId }, // Send deviceId and userId as query parameters
+  const [socket, setSocket] = useState(null);
+  const [connectionError, setConnectionError] = useState(false);
+  const [lastDeviceId, setLastDeviceId] = useState(null);
+
+  const connectWebSocket = (deviceId) => {
+    // Prevent reconnecting to the same device
+    if (deviceId === lastDeviceId) return;
+
+    if (connectionError) {
+      console.log("Connection attempt halted due to critical errors.");
+      return;
+    }
+
+    // Disconnect existing socket
+    if (socket) {
+      socket.disconnect();
+    }
+
+    if (!deviceId || !token) {
+      console.log("Waiting for device selection or token.");
+      return;
+    }
+
+    const newSocket = io(socketServer, {
+      query: { userId, deviceId, user, token, username },
+      reconnection: true,
+      reconnectionAttempts: 3,
+      reconnectionDelay: 1000,
+      transports: ['websocket', 'polling'],
+      withCredentials: true,
     });
 
-    // Listen for live data updates
-    socket.on('liveData', (data) => {
-      console.log('Received live data:', data);
+    newSocket.on("connect", () => {
+      console.log(`WebSocket connected for device: ${deviceId}`);
+      setConnectionError(false);
+      setLastDeviceId(deviceId);
+    });
 
-      // Dispatch data to Redux store
+    newSocket.on("liveData", (data) => {
+      console.log("Received live data:", data);
       if (data) {
-        dispatch(setSHT30(data.SHT30));
-        dispatch(setAnalog(data.ANALOG));
-        dispatch(setRelay(data.Relay));
-        dispatch(setLED(data.LED));
-        dispatch(setDigital(data.Digital));
-        dispatch(setTime(data.Time));
-        dispatch(setGCE_RS485(data.GCE_RS485));
-        dispatch(setDeviceUID(data.device_uid));
-        dispatch(setTimestamp(data.timestamp));
+        // Reset all data slices when a new device is selected
+        dispatch(setSHT30({}));
+        dispatch(setAnalog({}));
+        dispatch(setRelay({}));
+        dispatch(setLED({}));
+        dispatch(setDigital({}));
+        dispatch(setTime(null));
+        dispatch(setGCE_RS485({}));
+        dispatch(setDeviceUID(null));
+        dispatch(setTimestamp(null));
+
+        // Then set new data
+        dispatch(setSHT30(data.SHT30 || {}));
+        dispatch(setAnalog(data.ANALOG || {}));
+        dispatch(setRelay(data.Relay || {}));
+        dispatch(setLED(data.LED || {}));
+        dispatch(setDigital(data.Digital || {}));
+        dispatch(setTime(data.Time || null));
+        dispatch(setGCE_RS485(data.GCE_RS485 || {}));
+        dispatch(setDeviceUID(data.device_uid || null));
+        dispatch(setTimestamp(data.timestamp || null));
       }
     });
 
-    // Handle WebSocket connection errors
-    socket.on('connect_error', (error) => {
-      console.error('WebSocket connection error:', error);
-      alert('Failed to connect to WebSocket. Please try again.');
+    newSocket.on("connect_error", (error) => {
+      console.error("WebSocket connection error:", error);
+      if (error.message.includes("CORS")) {
+        console.error("CORS issue detected. Stopping further connection attempts.");
+        setConnectionError(true);
+      }
     });
 
-    // Handle WebSocket disconnections
-    socket.on('disconnect', () => {
-      console.log('WebSocket disconnected.');
+    newSocket.on("disconnect", (reason) => {
+      console.warn(`WebSocket disconnected for device ${deviceId}. Reason:`, reason);
+      if (reason === "io server disconnect" || reason === "transport error") {
+        console.error("Critical WebSocket error occurred. Stopping reconnection attempts.");
+        setConnectionError(true);
+        newSocket.close();
+      }
     });
 
-    // Cleanup on unmount
+    setSocket(newSocket);
+  };
+
+  useEffect(() => {
+    if (selectedDevice?.device_uid) {
+      connectWebSocket(selectedDevice.device_uid);
+    }
+
     return () => {
-      socket.disconnect();
+      if (socket) {
+        socket.disconnect();
+      }
     };
-  }, [dispatch, deviceId, userId]); // Add userId to dependency array for dynamic updates
+  }, [selectedDevice]); // Depend on Redux selected device
 
+  return null;
 };
 
 export default useFetchDeviceData;

@@ -3,38 +3,26 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import logo from "../../Images/white_logo.svg";
 import { setCredentials } from '../../Redux/Slices/authSlice';
+import { signIn } from '../../Services/authService';
+import { useSelector } from 'react-redux';
 
-function SignIn() {
+const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const navigate = useNavigate();
+  
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
-    
-    const validEmail = "login@voltrack.in";
-    const validPassword = "Voltrack@2024";
-    
-    if (email === validEmail && password === validPassword) {
-      // Generate a mock token
-      const token = btoa(`${email}:${password}`);
-      
-      // Dispatch action to set credentials in Redux store
-      dispatch(setCredentials({
-        token,
-        user: { email }
-      }));
-
-      // Store token in localStorage
-      localStorage.setItem('token', token);
-      
-      // Navigate to home page
-      navigate('/');
-    } else {
-      setError('Invalid email or password');
+    try {
+      await dispatch(signIn(email, password));
+      // Navigate to home page on successful login
+      navigate('/dashboard');
+    } catch (err) {
+      // Error is already handled in the action
+      console.error('Sign In Error:', err);
     }
   };
 
